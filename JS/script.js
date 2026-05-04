@@ -1,4 +1,69 @@
+    // script.js - JavaScript untuk interaksi dan logika pemesanan
+     /* ─── SCROLL FADE-IN (desktop cards) ─── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('#testiGrid .testi-card').forEach(c => observer.observe(c));
+
+
+  /* ─── MOBILE SLIDER: pause on hover/touch ─── */
+  const slider = document.getElementById('testiSlider');
+  if (slider) {
+    slider.addEventListener('mouseenter', () => slider.classList.add('paused'));
+    slider.addEventListener('mouseleave', () => slider.classList.remove('paused'));
+    slider.addEventListener('touchstart', () => slider.classList.add('paused'), { passive: true });
+    slider.addEventListener('touchend', () => {
+      setTimeout(() => slider.classList.remove('paused'), 2500);
+    });
+  }
+
+  /* ─── ARROW BUTTONS: manual scroll ─── */
+  const wrap = document.getElementById('sliderWrap');
+  document.getElementById('prevBtn')?.addEventListener('click', () => {
+    slider.classList.add('paused');
+    wrap.scrollBy({ left: -320, behavior: 'smooth' });
+    setTimeout(() => slider.classList.remove('paused'), 2500);
+  });
+  document.getElementById('nextBtn')?.addEventListener('click', () => {
+    slider.classList.add('paused');
+    wrap.scrollBy({ left: 320, behavior: 'smooth' });
+    setTimeout(() => slider.classList.remove('paused'), 2500);
+  });
+
+  /* ─── WHATSAPP REDIRECT ─── */
+  function sendToWhatsApp() {
+    const nama  = document.getElementById('f-name').value.trim();
+    const pesan   = document.getElementById('f-msg').value.trim();
+
+    if (!nama || !pesan) {
+      alert('Please fill in all fields before submitting.');
+      return;
+    }
+
+    const text = encodeURIComponent(
+`*Halo, Brand anda:*
+
+Saya : ${nama}
+ingin bertannya : ${pesan}`
+    );
+
+    // Replace with your actual WhatsApp number (no + or spaces)
+    const waNumber = '6285797252195';
+    window.open(`https://wa.me/${waNumber}?text=${text}`, '_blank');
+  }
+    
+    
+    
     // 0. Helper Function - Toast Notification
+
+
+
     function showToast(title, message, type = 'success', duration = 8000) {
         const toastElement = document.getElementById('toastNotification');
         const toastTitle = document.getElementById('toastTitle');
@@ -147,7 +212,7 @@
 
                 // Validasi input
                 if (!fullName || !phone || !bookingDate || !bookingTime) {
-                    showToast('Perhatian', 'Harap isi semua field yang wajib!', 'warning');
+                    showToast('Perhatian', 'Harap isi semua kolom yang wajib!', 'warning');
                     isSubmitting = false;
                     return;
                 }
